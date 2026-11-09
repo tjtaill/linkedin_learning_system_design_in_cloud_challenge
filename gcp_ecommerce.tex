@@ -1,0 +1,74 @@
+\documentclass[border=5mm]{standalone}
+
+\usepackage{graphicx}
+
+\graphicspath{{./images/}}
+
+\usepackage{tikz}
+
+\usetikzlibrary{shapes,fit}
+\usetikzlibrary{positioning}
+\def\is{.10} % image scale constant macro
+\def\ns{3.0cm} % node spacing constant macro
+\def\gns{20pt} % group node spacing
+\begin{document}
+\thispagestyle{empty}
+\begin{tikzpicture}[every node/.style={font=\tiny}]
+\node[inner sep=0pt,label={above:\textbf{user}}] (user)
+    {\includegraphics[width=\is\textwidth]{mobile_user.png}};
+\node[inner sep=0pt,label={left:\textbf{CDN}}, below right=\ns and \ns of user] (cdn)
+    {\includegraphics[width=\is\textwidth]{cloud_cdn.png}};
+\node[inner sep=0pt,label={right:\textbf{Load Balancer}}, below left=\ns and \ns of user] (lb)
+    {\includegraphics[width=\is\textwidth]{cloud_load_balancing.png}};  
+\node[inner sep=\gns, draw=black, fit=(cdn) (lb), label={above:\textbf{front end layer}}](fel) {};
+\draw[->] (user) -- (cdn) node[midway,sloped,below] {};
+\draw[->] (user) -- (lb) node[midway,sloped,below] {};
+\node[inner sep=0pt,label={left:\textbf{Backend service}}, below=\ns*2 of user] (be)
+    {\includegraphics[width=\is\textwidth]{google_kubernetes_engine.png}};
+
+\draw[->] (lb) -- (be) node[midway,sloped,below] {};
+
+\node[inner sep=0pt,label={left:\textbf{Pub Sub}}, below=\ns of be] (ps)
+    {\includegraphics[width=\is\textwidth]{pubsub.png}};
+
+\draw[->] (be) -- (ps) node[midway,sloped,below] {};
+
+\node[inner sep=\gns, draw=black, fit=(be), label={:\textbf{Back End Layer}}]() {};
+
+\node[inner sep=0pt,label={above:\textbf{Redis}}, below right=\ns and \ns of ps] (redis)
+    {\includegraphics[width=\is\textwidth]{redis.png}};
+
+\node[inner sep=0pt,label={below:\textbf{SQL Database}}, below=\ns of redis] (sdb)
+    {\includegraphics[width=\is\textwidth]{cloud_sql.png}};
+
+\draw[->] (redis) -- (sdb) node[midway,sloped,below] {};
+
+\node[inner sep=\gns, draw=black, fit=(redis) (sdb), label={right:\textbf{Database Layer}}](dbl) {};
+
+
+\draw[->] (ps) -- (dbl) node[midway,sloped,below] {};
+
+\node[inner sep=0pt,label={above:\textbf{Dataflow}}, below left=\ns and \ns of ps] (df)
+    {\includegraphics[width=\is\textwidth]{dataflow.png}};
+
+
+\node[inner sep=0pt,label={below:\textbf{BigQuery}}, below=\ns of df] (bq)
+    {\includegraphics[width=\is\textwidth]{bigquery.png}};
+
+\node[inner sep=\gns, draw=black, fit=(df) (bq), label={:\textbf{Analytics layer}}](al) {};
+
+\draw[->] (ps) -- (al) node[midway,sloped,below] {};
+
+
+
+
+\draw[->] (df) -- (bq) node[midway,below] {};
+
+
+
+
+
+\end{tikzpicture}
+\end{document}
+
+
